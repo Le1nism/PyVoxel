@@ -9,6 +9,17 @@ uniform mat4 m_view;
 uniform mat4 m_model;
 
 out vec3 voxel_color;
+out vec2 uv;
+
+const vec2 uv_coords[4] = vec2[4](
+	vec2(0, 0), vec2(0, 1),
+	vec2(1, 0), vec2(1, 1)
+);
+
+const int uv_indices[12] = int[12](
+	1, 0, 2, 1, 2, 3, // Tex coords indices for vertices of an even face
+	3, 0, 2, 3, 1, 0  // Odd face
+);
 
 vec3 hash31(float p) {
 
@@ -19,6 +30,8 @@ vec3 hash31(float p) {
 
 void main() {
 
+	int uv_index = gl_VertexID % 6 + (face_id & 1) * 6;
+	uv = uv_coords[uv_indices[uv_index]];
 	voxel_color = hash31(voxel_id);
 	gl_Position = m_proj * m_view * m_model * vec4(in_position, 1.0);
 }
