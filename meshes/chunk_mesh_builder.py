@@ -99,6 +99,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 				if is_void((x, y + 1, z), (wx, wy + 1, wz), world_voxels):
 					# Get AO values
 					ao = get_ao((x, y + 1, z), (wx, wy + 1, wz), world_voxels, plane = 'Y')
+					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					# Format: x, y, z, voxel_id, face_id, ao
 					v0 = to_uint8(x    , y + 1, z    , voxel_id, 0, ao[0])
@@ -106,12 +107,16 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 0, ao[2])
 					v3 = to_uint8(x    , y + 1, z + 1, voxel_id, 0, ao[3])
 
-					index = add_data(vertex_data, index, v0, v3, v2, v0, v2, v1)
+					if flip_id:
+						index = add_data(vertex_data, index, v1, v0, v3, v1, v3, v2)
+					else:
+						index = add_data(vertex_data, index, v0, v3, v2, v0, v2, v1)
 
 				# Bottom face
 				if is_void((x, y - 1, z), (wx, wy - 1, wz), world_voxels):
 					# Get AO values
 					ao = get_ao((x, y - 1, z), (wx, wy - 1, wz), world_voxels, plane = 'Y')
+					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					# Format: x, y, z, voxel_id, face_id, ao
 					v0 = to_uint8(x    , y    , z    , voxel_id, 1, ao[0])
@@ -119,12 +124,16 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					v2 = to_uint8(x + 1, y    , z + 1, voxel_id, 1, ao[2])
 					v3 = to_uint8(x    , y    , z + 1, voxel_id, 1, ao[3])
 
-					index = add_data(vertex_data, index, v0, v2, v3, v0, v1, v2)
+					if flip_id:
+						index = add_data(vertex_data, index, v1, v3, v0, v1, v2, v3)
+					else:
+						index = add_data(vertex_data, index, v0, v2, v3, v0, v1, v2)
 
 				# Right face
 				if is_void((x + 1, y, z), (wx + 1, wy, wz), world_voxels):
 					# Get AO values
 					ao = get_ao((x + 1, y, z), (wx + 1, wy, wz), world_voxels, plane = 'X')
+					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					# Format: x, y, z, voxel_id, face_id, ao
 					v0 = to_uint8(x + 1, y    , z    , voxel_id, 2, ao[0])
@@ -132,12 +141,15 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 2, ao[2])
 					v3 = to_uint8(x + 1, y    , z + 1, voxel_id, 2, ao[3])
 
+					if flip_id:
+						index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
 					index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
 
 				# Left face
 				if is_void((x - 1, y, z), (wx - 1, wy, wz), world_voxels):
 					# Get AO values
 					ao = get_ao((x - 1, y, z), (wx - 1, wy, wz), world_voxels, plane = 'X')
+					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					# Format: x, y, z, voxel_id, face_id, ao
 					v0 = to_uint8(x    , y    , z    , voxel_id, 3, ao[0])
@@ -145,12 +157,16 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					v2 = to_uint8(x    , y + 1, z + 1, voxel_id, 3, ao[2])
 					v3 = to_uint8(x    , y    , z + 1, voxel_id, 3, ao[3])
 
-					index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
+					if flip_id:
+						index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
+					else:
+						index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
 
 				# Back face
 				if is_void((x, y, z - 1), (wx, wy, wz - 1), world_voxels):
 					# Get AO values
 					ao = get_ao((x, y, z - 1), (wx, wy, wz - 1), world_voxels, plane = 'Z')
+					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					# Format: x, y, z, voxel_id, face_id, ao
 					v0 = to_uint8(x    , y    , z    , voxel_id, 4, ao[0])
@@ -158,12 +174,16 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					v2 = to_uint8(x + 1, y + 1, z    , voxel_id, 4, ao[2])
 					v3 = to_uint8(x + 1, y    , z    , voxel_id, 4, ao[3])
 
-					index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
+					if flip_id:
+						index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
+					else:
+						index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
 
 				# Front face
 				if is_void((x, y, z + 1), (wx, wy, wz + 1), world_voxels):
 					# Get AO values
 					ao = get_ao((x, y, z + 1), (wx, wy, wz + 1), world_voxels, plane = 'Z')
+					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					# Format: x, y, z, voxel_id, face_id, ao
 					v0 = to_uint8(x    , y    , z + 1, voxel_id, 5, ao[0])
@@ -171,7 +191,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 5, ao[2])
 					v3 = to_uint8(x + 1, y    , z + 1, voxel_id, 5, ao[3])
 
-					index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
+					if flip_id:
+						index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
+					else:
+						index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
 
 	return vertex_data[:index + 1]
 
