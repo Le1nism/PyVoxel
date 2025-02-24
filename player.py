@@ -3,9 +3,9 @@ from camera import Camera
 from settings import *
 
 class Player(Camera):
-	def __init__(self, app, position = PLAYER_POS, yaw = -90, pitch = 0):
+	def __init__(self, app, position = PLAYER_POS, yaw = -90, pitch = 0, speed = PLAYER_SPEED):
 		self.app = app
-		super().__init__(position, yaw, pitch)
+		super().__init__(position, yaw, pitch, speed)
 
 	def update(self):
 		self.keyboard_control()
@@ -30,7 +30,7 @@ class Player(Camera):
 
 	def keyboard_control(self):
 		key_state = pg.key.get_pressed()
-		vel = PLAYER_SPEED * self.app.delta_time
+		vel = self.speed * self.app.delta_time
 		if key_state[pg.K_w]:
 			self.move_forward(vel)
 		if key_state[pg.K_s]:
@@ -43,3 +43,7 @@ class Player(Camera):
 			self.move_up(vel)
 		if key_state[pg.K_e]:
 			self.move_down(vel)
+		if key_state[pg.K_LCTRL]:
+			self.speed_up(PLAYER_SPEED * 2)
+		if not key_state[pg.K_LCTRL]:
+			self.speed_up(PLAYER_SPEED)
