@@ -15,9 +15,22 @@ class VoxelHandler:
 		self.voxel_normal = None
 
 		self.interaction_mode = 0	# 0: remove voxel	1: add voxel
+		self.new_voxel_id = 1
 
 	def add_voxel(self):
-		pass
+		if self.voxel_id:
+			# Check voxel id along normal
+			result = self.get_voxel_id(self.voxel_world_pos + self.voxel_normal)
+
+			# Is the new place empty?
+			if not result[0]:
+				_, voxel_index, _, chunk = result
+				chunk.voxels[voxel_index] = self.new_voxel_id
+				chunk.mesh.rebuild()
+
+				# Was it an empty chunk
+				if chunk.is_empty:
+					chunk.is_empty = False
 
 	def remove_voxel(self):
 		if self.voxel_id:
@@ -26,13 +39,14 @@ class VoxelHandler:
 			self.chunk.mesh.rebuild()
 
 	def set_voxel(self):
+		print(self.interaction_mode)
 		if self.interaction_mode:
 			self.add_voxel()
 		else:
 			self.remove_voxel()
 
 	def switch_mode(self):
-		self_interaction_mode = not self.interaction_mode
+		self.interaction_mode = not self.interaction_mode
 
 	def update(self):
 		self.ray_cast()
