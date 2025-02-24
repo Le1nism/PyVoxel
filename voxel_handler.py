@@ -32,11 +32,37 @@ class VoxelHandler:
 				if chunk.is_empty:
 					chunk.is_empty = False
 
+	def rebuild_adj_chunk(self, adj_voxel_pos):
+		index = get_chunk_index(adj_voxel_pos)
+		if index != -1:
+			self.chunks[index].mesh.rebuild()
+
+	def rebuild_adjacent_chunks(self):
+		lx, ly, lz = self.voxel_local_pos
+		wx, wy, wz = self.voxel_world_pos
+
+		if lx == 0:
+			self.rebuild_adj_chunk((wx - 1, wy, wz))
+		elif lx == CHUNK_SIZE - 1:
+			self.rebuild_adj_chunk((wx + 1, wy, wz))
+
+		if ly == 0:
+			self.rebuild_adj_chunk((wx, wy - 1, wz))
+		elif ly == CHUNK_SIZE - 1:
+			self.rebuild_adj_chunk((wx, wy + 1, wz))
+
+		if lz == 0:
+			self.rebuild_adj_chunk((wx, wy, wz - 1))
+		elif lz == CHUNK_SIZE - 1:
+			self.rebuild_adj_chunk((wx, wy, wz + 1))
+
+
 	def remove_voxel(self):
 		if self.voxel_id:
 			self.chunk.voxels[self.voxel_index] = 0
 
 			self.chunk.mesh.rebuild()
+			self.rebuild_adjacent_chunks()
 
 	def set_voxel(self):
 		print(self.interaction_mode)
