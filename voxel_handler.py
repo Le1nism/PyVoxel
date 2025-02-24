@@ -65,7 +65,6 @@ class VoxelHandler:
 			self.rebuild_adjacent_chunks()
 
 	def set_voxel(self):
-		print(self.interaction_mode)
 		if self.interaction_mode:
 			self.add_voxel()
 		else:
