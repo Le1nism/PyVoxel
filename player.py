@@ -44,6 +44,6 @@ class Player(Camera):
 		if key_state[pg.K_e]:
 			self.move_down(vel)
 		if key_state[pg.K_LCTRL]:
-			self.speed_up(PLAYER_SPEED * 2)
+			self.speed_up(PLAYER_SPEED * 4)
 		if not key_state[pg.K_LCTRL]:
 			self.speed_up(PLAYER_SPEED)
