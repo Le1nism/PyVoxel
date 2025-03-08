@@ -39,7 +39,13 @@ def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height):
     voxel_id = 0
 
     if wy < world_height - 1:
-        voxel_id = STONE
+        # Create caves
+        if (noise3(wx * 0.09, wy * 0.09, wz * 0.09) > 0 and
+                noise2(wx * 0.1, wz * 0.1) * 3 + 3 < wy < world_height - 10):
+            voxel_id = 0
+
+        else:
+            voxel_id = STONE
     else:
         rng = int(7 * random())
         ry = wy - rng
