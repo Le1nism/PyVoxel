@@ -65,3 +65,40 @@ def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height):
             voxel_id = SAND
 
     voxels[get_index(x, y, z)] = voxel_id
+
+    # Place tree
+    if wy < DIRT_LVL:
+        place_tree(voxels, x, y, z, voxel_id)
+
+@njit
+def place_tree(voxels, x, y, z, voxel_id):
+    rnd = random()
+    if voxel_id != GRASS or rnd > TREE_PROBABILITY:
+        return None
+    if y + TREE_HEIGHT >= CHUNK_SIZE:
+        return None
+    if x - TREE_H_WIDTH < 0 or x + TREE_H_WIDTH >= CHUNK_SIZE:
+        return None
+    if z - TREE_H_WIDTH < 0 or z + TREE_H_WIDTH >= CHUNK_SIZE:
+        return None
+
+    # Dirt under the tree
+    voxels[get_index(x, y, z)] = DIRT
+
+    # Leaves
+    m = 0
+    for n, iy in enumerate(range(TREE_H_HEIGHT, TREE_HEIGHT - 1)):
+        k = iy % 2
+        rng = int(random() * 2)
+        for ix in range(-TREE_H_WIDTH + m, TREE_H_WIDTH - m * rng):
+            for iz in range(-TREE_H_WIDTH + m * rng, TREE_H_WIDTH - m):
+                if (ix + iz) % 4:
+                    voxels[get_index(x + ix + k, y + iy, z + iz + k)] = LEAVES
+        m += 1 if n > 0 else 3 if n > 1 else 0
+
+    # Tree trunk
+    for iy in range(1, TREE_HEIGHT - 2):
+        voxels[get_index(x, y + iy, z)] = WOOD
+
+    # Top
+    voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = LEAVES
