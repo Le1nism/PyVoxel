@@ -45,4 +45,20 @@ PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
 MOUSE_SENSITIVITY = 0.002
 
 # Colors
-BG_COLOR = glm.vec3(0.1, 0.16, 0.25)
+BG_COLOR = glm.vec3(0.58, 0.83, 0.99)
+
+# Textures
+SAND = 1
+GRASS = 2
+DIRT = 3
+STONE = 4
+SNOW = 5
+LEAVES = 6
+WOOD = 7
+
+# Terrain levels
+SNOW_LVL = 54
+STONE_LVL = 49
+DIRT_LVL = 40
+GRASS_LVL = 8
+SAND_LVL = 7

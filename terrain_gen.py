@@ -29,3 +29,33 @@ def get_height(x, z):
     height *= island
 
     return int(height)
+
+@njit
+def get_index(x, y, z):
+    return x + CHUNK_SIZE * z + CHUNK_AREA * y
+
+@njit
+def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height):
+    voxel_id = 0
+
+    if wy < world_height - 1:
+        voxel_id = STONE
+    else:
+        rng = int(7 * random())
+        ry = wy - rng
+        if SNOW_LVL <= ry < world_height:
+            voxel_id = SNOW
+
+        elif STONE_LVL <= ry < SNOW_LVL:
+            voxel_id = STONE
+
+        elif DIRT_LVL <= ry < STONE_LVL:
+            voxel_id = DIRT
+
+        elif GRASS_LVL <= ry < DIRT_LVL:
+            voxel_id = GRASS
+
+        else:
+            voxel_id = SAND
+
+    voxels[get_index(x, y, z)] = voxel_id
