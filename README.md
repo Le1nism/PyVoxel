@@ -1,2 +1,3 @@
-pip install requirements.txt to automatically install all libraries
+pip install -r requirements.txt to automatically install all libraries
+
 Required Python 3+
